@@ -52,7 +52,12 @@ public class LoginLogoutTest {
         subject.logout();
     }
 
-
+    /**
+     * 
+     * 在 shiro-realm.ini 通过
+     * myRealm1=com.github.zhangkaitao.shiro.chapter2.realm.MyRealm1
+     * 这里只有一个realm
+     */
     @Test
     public void testCustomRealm() {
         //1、获取SecurityManager工厂，此处使用Ini配置文件初始化SecurityManager
@@ -81,6 +86,10 @@ public class LoginLogoutTest {
         subject.logout();
     }
 
+    /**
+     * 这里会有多个realm,如果第一个 realm认证没有通过。会去第二realm再认证
+     * 
+     */
     @Test
     public void testCustomMultiRealm() {
         //1、获取SecurityManager工厂，此处使用Ini配置文件初始化SecurityManager
@@ -109,7 +118,15 @@ public class LoginLogoutTest {
         subject.logout();
     }
 
-
+    /**
+     * 根据shiro-jdbc-realm.ini
+     * 其中指定的jdbc realm是shiro自带的 jdbc realm
+     * org.apache.shiro.realm.jdbc.JdbcRealm
+     * 并且我们要根据mysql信息修改相应的密码
+     * 据org.apache.shiro.realm.jdbc.JdbcRealm
+     * 我们要建立数据库表 src/sql下有sql语句
+     * 
+     */
     @Test
     public void testJDBCRealm() {
         //1、获取SecurityManager工厂，此处使用Ini配置文件初始化SecurityManager

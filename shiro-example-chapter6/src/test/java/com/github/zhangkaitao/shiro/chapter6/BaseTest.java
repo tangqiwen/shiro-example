@@ -38,6 +38,7 @@ public abstract class BaseTest {
 
     @Before
     public void setUp() {
+    	//每次测试开始时，清空表中的内容，保证测试时的条件完全一致
         JdbcTemplateUtils.jdbcTemplate().update("delete from sys_users");
         JdbcTemplateUtils.jdbcTemplate().update("delete from sys_roles");
         JdbcTemplateUtils.jdbcTemplate().update("delete from sys_permissions");

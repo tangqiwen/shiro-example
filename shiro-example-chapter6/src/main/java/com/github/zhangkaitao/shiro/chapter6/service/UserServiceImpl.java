@@ -14,6 +14,7 @@ import java.util.Set;
 public class UserServiceImpl implements UserService {
 
     private UserDao userDao = new UserDaoImpl();
+    //结合spring后，这里可以注入一个加密服务，在注册时帮助加密
     private PasswordHelper passwordHelper = new PasswordHelper();
 
     /**

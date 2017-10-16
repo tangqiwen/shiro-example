@@ -13,6 +13,14 @@ import java.util.Arrays;
  */
 public class RoleTest extends BaseTest {
 
+	/**
+	 * 基于角色的访问控制（隐式角色）shiro-role.ini这种配置，
+	 * 测试角色
+	 * 由于用户捅有角色 role1,role2
+	 * 这是一个隐式角色意判断，即粗粒度权限控制。如果某天不需要某个角色role2了
+	 * 就需要将代码中有关role2角色判断的代码删除。这就是基于角色判断带来的问题
+	 * 
+	 */
     @Test
     public void testHasRole() {
         login("classpath:shiro-role.ini", "zhang", "123");

@@ -23,7 +23,11 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
         CacheManager cacheManager = CacheManager.newInstance(CacheManager.class.getClassLoader().getResource("ehcache.xml"));
         passwordRetryCache = cacheManager.getCache("passwordRetryCache");
     }
-
+    /**
+     * 限制密码匹配次数，但是需要定时清除，这个限制
+     * 
+     * 
+     */
     @Override
     public boolean doCredentialsMatch(AuthenticationToken token, AuthenticationInfo info) {
         String username = (String)token.getPrincipal();

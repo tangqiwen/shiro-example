@@ -15,28 +15,44 @@ import org.junit.Test;
  */
 public class UserRealmTest extends BaseTest {
     
-
+	/**
+	 * 首先要看BaseTest这个文件，它初始化了数据库中的内容
+	 * 由于用了正确的用户名和密码，所以认证成功.
+	 */
     @Test
-      public void testLoginSuccess() {
+      public void testLoginSuccess() {    	
         login("classpath:shiro.ini", u1.getUsername(), password);
         Assert.assertTrue(subject().isAuthenticated());
     }
-
+    /**
+     * 使用了一个不存在的用户名，所以在UserRealm中找不到这个用户，抛出异常
+     */
     @Test(expected = UnknownAccountException.class)
     public void testLoginFailWithUnknownUsername() {
         login("classpath:shiro.ini", u1.getUsername() + "1", password);
     }
-
+    
+    /**
+     * 用了一个不正确的密码，抛出密码匹配异常
+     */
     @Test(expected = IncorrectCredentialsException.class)
     public void testLoginFailWithErrorPassowrd() {
         login("classpath:shiro.ini", u1.getUsername(), password + "1");
     }
-
+    /**
+     * 用户 4,在创建时，设定了一个锁定位，所以抛出锁定异常
+     */
     @Test(expected = LockedAccountException.class)
     public void testLoginFailWithLocked() {
         login("classpath:shiro.ini", u4.getUsername(), password + "1");
     }
 
+    /**
+     * 这里连续试了5次错误的密码。
+     * 由于密码匹配算法中增加了限制连续5次输入错误，就抛出异重试异常。
+     * 连续输入的错误次数保存在ehcache中，根据配置，需要1小时后才会失效。
+     * 这样做的目的是为了防止暴力破解。
+     */
     @Test(expected = ExcessiveAttemptsException.class)
     public void testLoginFailWithLimitRetryCount() {
         for(int i = 1; i <= 5; i++) {

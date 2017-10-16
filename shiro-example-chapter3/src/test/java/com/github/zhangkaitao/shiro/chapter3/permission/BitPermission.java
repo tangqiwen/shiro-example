@@ -30,7 +30,11 @@ public class BitPermission implements Permission {
     private String resourceIdentify;
     private int permissionBit;
     private String instanceId;
-
+    
+    /**
+     * 这里假设格式一定是可以正常解释的格式，即捅有：+分隔的每一个部分
+     * @param permissionString
+     */
     public BitPermission(String permissionString) {
         String[] array = permissionString.split("\\+");
 
@@ -55,7 +59,11 @@ public class BitPermission implements Permission {
         }
 
     }
-
+    /**
+     * 举例: +*+0+abc
+     * *：表示所有资源，0:表示所有权限,abc:表示资源的实例 
+     *   即对所有资源的实例abc，捅有新增修改查看删除权限，通如下逻辑判断会返回true
+     */
     @Override
     public boolean implies(Permission p) {
         if(!(p instanceof BitPermission)) {

@@ -24,6 +24,11 @@ import java.util.Arrays;
  */
 public class NonConfigurationCreateTest {
 
+	/**
+	 * 纯代码方式配置
+	 * 
+	 * 
+	 */
     @Test
     public void test() {
 
@@ -44,7 +49,7 @@ public class NonConfigurationCreateTest {
         ds.setDriverClassName("com.mysql.jdbc.Driver");
         ds.setUrl("jdbc:mysql://localhost:3306/shiro");
         ds.setUsername("root");
-        ds.setPassword("");
+        ds.setPassword("root");
 
         JdbcRealm jdbcRealm = new JdbcRealm();
         jdbcRealm.setDataSource(ds);

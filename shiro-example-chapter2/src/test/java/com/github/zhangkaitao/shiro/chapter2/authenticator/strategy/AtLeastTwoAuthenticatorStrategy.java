@@ -43,7 +43,8 @@ public class AtLeastTwoAuthenticatorStrategy extends AbstractAuthenticationStrat
 
         return info;
     }
-
+    
+    
     @Override
     public AuthenticationInfo afterAllAttempts(AuthenticationToken token, AuthenticationInfo aggregate) throws AuthenticationException {
         if (aggregate == null || CollectionUtils.isEmpty(aggregate.getPrincipals()) || aggregate.getPrincipals().getRealmNames().size() < 2) {

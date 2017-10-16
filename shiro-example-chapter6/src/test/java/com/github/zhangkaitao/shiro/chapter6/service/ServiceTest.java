@@ -13,7 +13,11 @@ import java.util.Set;
  */
 public class ServiceTest extends BaseTest {
 
-
+	/**
+	 * 这里是对service功能的测试，验证代码的正确性
+	 * 
+	 * 
+	 */
     @Test
     public void testUserRolePermissionRelation() {
 

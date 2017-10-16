@@ -12,7 +12,10 @@ import org.junit.Test;
  * <p>Version: 1.0
  */
 public class AuthorizerTest extends BaseTest {
-
+	/**
+	 * 这个里面自定义了：权限格式（BitPermission）及权限解释器(BitAndWildPermissionResolver)
+	 * 向我们展示了如何自定义权限的格式，及如何解释判断自定义的权限格式
+	 */
     @Test
     public void testIsPermitted() {
         login("classpath:shiro-authorizer.ini", "zhang", "123");

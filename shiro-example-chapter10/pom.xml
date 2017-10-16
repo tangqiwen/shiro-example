@@ -112,8 +112,20 @@
                     <path>/${project.build.finalName}</path>
                 </configuration>
 
-            </plugin>
-        </plugins>
+			</plugin>
+			<!-- compiler插件, 设定JDK版本 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>UTF8</encoding>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
 
 
     </build>

@@ -15,6 +15,9 @@ import org.apache.shiro.subject.PrincipalCollection;
  */
 public class MyRealm extends AuthorizingRealm {
 
+	/**
+	 * 这里的角色权限可以是从数据库中根据用户来获取
+	 */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
@@ -26,7 +29,10 @@ public class MyRealm extends AuthorizingRealm {
         authorizationInfo.addStringPermission("user2:*");
         return authorizationInfo;
     }
-
+    /**
+     * 身份信息也是从数据库中根据用户名和密码获取
+     * 
+     */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         String username = (String)token.getPrincipal();  //得到用户名

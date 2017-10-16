@@ -1,11 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache name="es">
+<!-- 
+
+缓存区使用<cache/>标签进行配置，主要属性以及意义如下：   
+name（必填属性）：缓存区名称，用以区别缓存区，必须唯一。  
+maxEntriesLocalHeap（必填属性）：设置缓存在本地内存中最大缓存项数量（0 表示无限）。
+		（等效于旧版本中的maxElementsInMemory属性）。      
+		在实际使用中，在非分布式部署条件下，无限等效于Integer.MAX_SIZE (2147483647)。
+		在分布式部署条件下，缓存项数量由Terracotta Server Array资源上限决定。   
+maxEntriesLocalDisk（必填属性）：设置保存在本地磁盘中的的最大缓存项数量。 默认为0，表示数量不限。  
+eternal（必填属性）：设置缓存项是否为永久的。如果设置为true，缓存项的过期设置将被忽略，缓存项永不过期。   
+overflowToOffHeap：此属性仅在使用Ehcache企业版时有效。
+			设置为true， 缓存将使用非堆内存，非堆内存并非由Java管理，与Java垃圾回收无关。默认为false。   
+maxBytesLocalHeap：定义保存在Java虚拟机堆内存中的缓存项的最大字节数。 
+					定义时格式如下<number>k|K|m|M|g|G，其中k|K代表千字节，m|M代表兆字节，g|G代表吉字节。      
+					举例：maxBytesLocalHeap="2g"将使用2G堆内存。  
+					此属性与maxEntriesLocalHeap互斥，指定了此属性，则不能指定maxEntriesLocalHeap。      
+					如果设定过CacheManager的maxBytesLocalHeap属性，也不能使用此属性。      
+					放入缓存的缓存项将使用net.sf.ehcache.pool.sizeof.SizeOf方法计算其字节数。  
+					如果希望在计算字节数时忽略对象树种的某些属性，请参考net.sf.ehcache.pool.sizeof.annotations.IgnoreSizeOf注解。   
+maxBytesLocalOffHeap：此属性仅在使用Ehcache企业版时有效。设置本缓存区使用的非堆内存的大小。 
+					指定此属性，将默认设置overflowToOffHeap 为true。如果特别指定了overflowToOffHeap=”false”，将禁止使用非堆内存。
+					注意：当使用非堆内存时，推荐将maxEntriesLocalHeap设置为大于等于100，否则将严重影响性能。也将看到一条警告日志。
+					非堆内存最小值为128MB，没有上限。   
+maxBytesLocalDisk：和maxBytesLocalHeap属性类似，不过指定的是存储在本地磁盘上的缓存项最大可使用的字节数。   
+timeToIdleSeconds：设置一个缓存项在过期前的闲置时间。即一个缓存项在其过期前，两次访问间隔的最大时间。
+					仅在缓存项为非永久时有效。0表示不限闲置时间，默认为0。  
+timeToLiveSeconds：设置一个缓存项在过期前的生存时间。即从缓存项创建到 过期的最大时间。
+					仅在缓存项为非永久时有效。0表示不限生存时间，默认为0。  
+diskExpiryThreadIntervalSeconds：清理保存在磁盘上的过期缓存项目的线程的 启动时间间隔，默认120秒。   
+diskSpoolBufferSizeMB：磁盘缓冲区的大小。写入磁盘的内容将缓冲在此区域， 使用异步的方式写入磁盘。
+						默认30MB，每一个缓存区使用独立的缓冲区，如果遇到OutOfMemory错误时，可以尝试减小这个值。
+						改进磁盘写入性能时，尝试增加这个值。将日志级别开到Trace，当DiskStore执行磁盘写入时，可以看到对应日志。
+clearOnFlush：当flush()方法调用时，MemoryStore是否清空其内容，默认为 true，即清空。   
+statistics：是否收集统计信息。如果需要监控缓存使用情况，应该打开这个选项。 默认为关闭（统计会影响性能）。设置statistics="true"开启统计。
+memoryStoreEvictionPolicy：当缓存项达到maxEntriesLocalHeap限制时，剔除缓存项的策略。默认为LRU（Least Recently Used）。
+						其他的策略有：FIFO（First In First Out）和LFU（Less Frequently Used）。   
+copyOnRead：当缓存项被读出时，是否返回一份它的拷贝（返回对象是缓存中 对象的拷贝）。默认false。   
+copyOnWrite：当缓存项被写入时，是否写入一份它的拷贝（写入缓存的是写入 对象的拷贝）。默认false。   
+				通过使用<persistence/>子元素，可以配置缓存区的持久化策略。<persistence/>元素的主要属性如下：  
+				strategy：配置缓存区持久化的类型。可选值如下：   
+				localRestartable：仅在使用Ehcache企业版时有效。启用RestartStore，拷贝所有的缓存项（包含堆和非堆中的）到磁盘中，
+				此选项提供了缓存快速重启能力以及对磁盘上缓存的容错能力。   
+				localTempSwap：当缓存容量达到上限时，将缓存对象 （包含堆和非堆中的）交换到磁盘中。"localTempSwap" 并不持久化缓存内容。
+				none：不持久化缓存内容。   
+				distributed：按照<terracotta>标签配置的持久化方式执行。非分布式部署时，此选项不可用。  
+				synchronousWrites：此属性仅在strategy="localRestartable"时有意义。默认false。
+				设置为true，缓存写入方法在缓存项成功写入磁盘前不会返回
+				
+ -->
+
+
 
     <diskStore path="java.io.tmpdir"/>
 
+<!--     
+        设定具体的命名缓存的数据过期策略   
+  
+        cache元素的属性：   
+            name：缓存名称                  
+            maxElementsInMemory：内存中最大缓存对象数                  
+            maxElementsOnDisk：硬盘中最大缓存对象数，若是0表示无穷大                  
+            eternal：true表示对象永不过期，此时会忽略timeToIdleSeconds和timeToLiveSeconds属性，默认为false                  
+            overflowToDisk：true表示当内存缓存的对象数目达到了maxElementsInMemory界限后，会把溢出的对象写到硬盘缓存中。注意：如果缓存的对象要写入到硬盘中的话，则该对象必须实现了Serializable接口才行。                  
+            diskSpoolBufferSizeMB：磁盘缓存区大小，默认为30MB。每个Cache都应该有自己的一个缓存区。                  
+            diskPersistent：是否缓存虚拟机重启期数据                  
+            diskExpiryThreadIntervalSeconds：磁盘失效线程运行时间间隔，默认为120秒     
+            timeToIdleSeconds： 设定允许对象处于空闲状态的最长时间，以秒为单位。当对象自从最近一次被访问后，如果处于空闲状态的时间超过了timeToIdleSeconds属性值，这个对象就会过期，EHCache将把它从缓存中清空。只有当eternal属性为false，该属性才有效。如果该属性值为0，则表示对象可以无限期地处于空闲状态                  
+            timeToLiveSeconds：设定对象允许存在于缓存中的最长时间，以秒为单位。当对象自从被存放到缓存中后，如果处于缓存中的时间超过了 timeToLiveSeconds属性值，这个对象就会过期，EHCache将把它从缓存中清除。只有当eternal属性为false，该属性才有效。如果该属性值为0，则表示对象可以无限期地存在于缓存中。timeToLiveSeconds必须大于timeToIdleSeconds属性，才有意义     
+            memoryStoreEvictionPolicy：当达到maxElementsInMemory限制时，Ehcache将会根据指定的策略去清理内存。可选策略有：LRU（最近最少使用，默认策略）、FIFO（先进先出）、LFU（最少访问次数）。   
+    		statistics:开启统计分析
+    -->  
 
-
-    <!-- 登录记录缓存 锁定10分钟 -->
+    <!-- 登录记录缓存 锁定60分钟 -->
     <cache name="passwordRetryCache"
            maxEntriesLocalHeap="2000"
            eternal="false"
@@ -14,5 +81,6 @@
            overflowToDisk="false"
            statistics="true">
     </cache>
+	
 
 </ehcache>
